@@ -5,6 +5,8 @@ from pymongo import MongoClient
 client = MongoClient('localhost', 27017)
 db = client.dbsparta_plus_week1
 
+from datetime import datetime
+
 @app.route('/')
 def home():
     return render_template('index.html')
@@ -19,9 +21,22 @@ def save_journal():
     title_receive = request.form['title_give']
     content_receive = request.form['content_give']
 
+    file = request.files["file_give"]
+
+    extension = file.filename.split('.')[-1]
+
+    today = datetime.now()
+    current_time = today.strftime('%Y-%m-%d-%H-%M-%S')
+
+    filename = f'file-{current_time}'
+
+    save_to = f'static/{filename}.{extension}'
+    file.save(save_to)
+
     doc = {
         'title': title_receive,
-        'content': content_receive
+        'content': content_receive,
+        'file': f'{filename}.{extension}'
     }
 
     db.journal.insert_one(doc)
