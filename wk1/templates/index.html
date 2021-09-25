@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ko">
+<html lang="en">
 <head>
     <title>Hello, world!</title>
 
@@ -13,13 +13,13 @@
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-            crossorigin="anonymous"></script>
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-            crossorigin="anonymous"></script>
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
 
     <!--    google font "jua"-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -27,19 +27,20 @@
     <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
 
     <style>
-        *{
+        * {
             font-family: 'Jua', sans-serif;
         }
 
-        .wrap{
+        .wrap {
             width: 900px;
             margin: auto;
         }
 
-        .jumbotron-fluid{
+        .jumbotron-fluid {
             padding-left: 50px;
         }
-        .posting-box{
+
+        .posting-box {
             width: 500px;
             margin-top: 20px;
         }
@@ -47,68 +48,81 @@
 
     <script>
         $(document).ready(function () {
-            listing()
-        })
+            listing();
+        });
+
         function listing() {
             $.ajax({
-                url: '/journal?sample=샘플데이터',
+                type: "GET",
+                url: "/journal",
                 data: {},
-                success: function (a) {
-                    alert(a['b'])
+                dataType: "json",
+                success: function (response) {
+                    let journals = response['all_journals']
+                    for (let i = 0; i < journals.length; i++) {
+                        let title = journals[i]['title']
+                        let content = journals[i]['content']
+
+                        let temp_html = `<div class="card">
+                                            <img src="..." class="card-img-top" alt="...">
+                                            <div class="card-body">
+                                                <h5 class="card-title">Card title that wraps to a new line</h5>
+                                                <p class="card-text">This is a longer card with supporting text below as a natural lead-in to
+                                                    additional content. This content is a little bit longer.</p>
+                                            </div>
+                                           </div>`
+                        $('#cards').append(temp_html)
+                    }
                 },
             });
         }
 
-        function posting(){
+        function posting() {
+            let title = $('#title').val()
+            let content = $('#content').val()
+
             $.ajax({
                 type: "POST",
                 url: "/journal",
-                data: { sample : "샘플데이터"},
-                success: function(c){
-                    alert(c['c'])
+                data: {title_give: title, content_give: content},
+                success: function (response) {
+                    alert(response['msg'])
+                    location.reload()
                 },
             });
         }
     </script>
 
 </head>
-    <body>
-        <div class="wrap">
-            <div class="jumbotron jumbotron-fluid">
-            <div class="container">
-                <h1>나홀로 일기장</h1>
-                <div class="posting-box">
-                    <div class="input-group mb-3">
-                        <div class="custom-file">
-                            <input type="file" class="custom-file-input" id="inputGroupFile01"
-                                   aria-describedby="inputGroupFileAddon01">
-                            <label class="custom-file-label" for="inputGroupFile01">사진 선택하기</label>
-                        </div>
+<body>
+<div class="wrap">
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <h1>나홀로 일기장</h1>
+            <div class="posting-box">
+                <div class="input-group mb-3">
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="inputGroupFile01"
+                               aria-describedby="inputGroupFileAddon01">
+                        <label class="custom-file-label" for="inputGroupFile01">사진 선택하기</label>
                     </div>
-                    <form>
-                        <div class="form-group">
-                            <input type="email" class="form-control" id="exampleFormControlInput1"
-                                   placeholder="사진 제목">
-                        </div>
-                        <div class="form-group">
-                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
+                </div>
+                <form>
+                    <div class="form-group">
+                        <input type="email" class="form-control" id="title"
+                               placeholder="사진 제목">
+                    </div>
+                    <div class="form-group">
+                            <textarea class="form-control" id="content" rows="3"
                                       placeholder="내용 입력"></textarea>
-                        </div>
-                        <button onclick="posting()" type="button" class="btn btn-primary">저장하기</button>
-                    </form>
-                </div>
+                    </div>
+                    <button onclick="posting()" type="button" class="btn btn-primary">저장하기</button>
+                </form>
             </div>
         </div>
-            <div class="card-columns">
-            <div class="card">
-                <img src="..." class="card-img-top" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">Card title that wraps to a new line</h5>
-                    <p class="card-text">This is a longer card with supporting text below as a natural lead-in to
-                        additional content. This content is a little bit longer.</p>
-                </div>
-            </div>
-        </div>
-        </div>
-    </body>
+    </div>
+    <div class="card-columns" id="cards">
+    </div>
+</div>
+</body>
 </html>
