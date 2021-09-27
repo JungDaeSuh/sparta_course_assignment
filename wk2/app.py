@@ -9,14 +9,14 @@ def main():  # put application's code here
     my_name = "Sparta"
     return render_template('index.html', name=my_name)
 
-@app.route('/detail/<keyword>')
+@app.route('/detailed/<keyword>')
 def detail(keyword):  # put application's code here
-    r = requests.get('http://openapi.seoul.go.kr:8088/6d4d776b466c656533356a4b4b5872/json/RealtimeCityAir/1/99')
-    response = r.json()
-    rows = response['RealtimeCityAir']['row']
+    r = requests.get(f"https://owlbot.info/api/v4/dictionary/{keyword}", headers={"Authorization": "Token 605d8ee2c21155342169d23e1e421a42eb26e9d1"})
+    result = r.json()
+    print(result)
     word_receive = request.args.get("word_give")
     print(word_receive)
-    return render_template('detail.html', rows=rows, word=keyword)
+    return render_template('detailed.html', word=keyword)
 
 
 if __name__ == '__main__':
@@ -35,7 +35,7 @@ if __name__ == '__main__':
 #
 # @app.route('/detail')
 # def detail():
-#     return render_template("detail.html")
+#     return render_template("detailed.html")
 #
 #
 # if __name__ == '__main__':
