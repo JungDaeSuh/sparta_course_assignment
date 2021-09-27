@@ -1,4 +1,5 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
+import requests
 
 app = Flask(__name__)
 
@@ -8,9 +9,14 @@ def main():  # put application's code here
     my_name = "Sparta"
     return render_template('index.html', name=my_name)
 
-@app.route('/detail')
-def detail():  # put application's code here
-    return render_template('detail.html')
+@app.route('/detail/<keyword>')
+def detail(keyword):  # put application's code here
+    r = requests.get('http://openapi.seoul.go.kr:8088/6d4d776b466c656533356a4b4b5872/json/RealtimeCityAir/1/99')
+    response = r.json()
+    rows = response['RealtimeCityAir']['row']
+    word_receive = request.args.get("word_give")
+    print(word_receive)
+    return render_template('detail.html', rows=rows, word=keyword)
 
 
 if __name__ == '__main__':

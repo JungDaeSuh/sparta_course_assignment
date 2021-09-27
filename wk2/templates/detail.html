@@ -3,7 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <style>
+        .color{
+            color: red;
+        }
+    </style>
     <script>
+        $(function () {
+            //get_list();
+        });
+
+        function get_list(){
+            $.ajax({
+                url: "http://openapi.seoul.go.kr:8088/6d4d776b466c656533356a4b4b5872/json/RealtimeCityAir/1/99",
+                data: {},
+                dataType: "json",
+                success: function(response){
+                    let rows = response["RealtimeCityAir"]["row"];
+                    console.log(rows)
+
+                    for (let i = 0; i < rows.length; i++){
+                        let district = rows[i]['MSRSTE_NM']
+                        let pm10 = rows[i]['PM10']
+                        let pm25 = rows[i]['PM25']
+
+                        let temp_html = ``
+                        if (pm10 >= 10){
+                            temp_html = `<li class="color">${district}: 미세먼지 ${pm10} 초미세먼지 ${pm25}</li>`
+                        } else {
+                            temp_html = `<li>${district}: 미세먼지 ${pm10} 초미세먼지 ${pm25}</li>`
+                        }
+
+                        $('#district_list').append(temp_html)
+
+
+                    }
+                },
+            });
+        }
 
     </script>
 </head>
@@ -12,5 +50,16 @@
     <a href="/">메인 페이지로 가기</a>
     <br>
     <button onclick="window.location.href='/'">메인으로 돌아가기</button>
+    <h3>받은 단어는 {{ word }}</h3>
+    <ul id="district_list">
+        {% for row in rows %}
+            {% set district = row["MSRSTE_NM"] %}
+            {% set pm10 = row["PM10"] %}
+            {% set pm25 = row["PM25"] %}
+            {% if pm10 >= 5 and pm25 >= 5 %}
+                <li>{{ district }}: 미세먼지{{ pm10|int }} 초미세먼지{{ pm25|int }}</li>
+            {% endif %}
+        {% endfor %}
+    </ul>
 </body>
 </html>
