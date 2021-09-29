@@ -75,7 +75,7 @@
         <script>
             let word = '{{ word }}'
             $(document).ready(function () {
-                get_definitions()
+                {#get_definitions()#}
             })
 
             function get_definitions() {
@@ -130,14 +130,25 @@
         <div class="container">
             <div class="d-flex justify-content-between align-items-end">
                 <div>
-                    <h1 id="word" style="display: inline;"></h1>
-                    <h5 id="pronunciation" style="display: inline;"></h5>
+                    <h1 id="word" style="display: inline;">{{ result.word }}</h1>
+                    {% if result.pronunciation %}
+                        <h5 id="pronunciation" style="display: inline;">/{{ result.pronunciation }}/</h5>
+                    {% endif %}
                 </div>
                 <button id="btn-save" class="btn btn-outline-sparta btn-lg"><i class="far fa-save"></i></button>
                 <button id="btn-delete" class="btn btn-sparta btn-lg"><i class="fas fa-trash-alt"></i></button>
             </div>
             <hr>
             <div id="definitions">
+                {% for definition in result.definitions %}
+                    <div style="padding:10px">
+                        <i>{{ definition.type }}</i>
+                        <br>{{ definition.definition.encode('ascii', 'ignore').decode('utf-8') }}<br>
+                        {% if definition.example %}
+                            <span class="example">{{ definition.example.encode('ascii', 'ignore').decode('utf-8')|safe }}</span>
+                        {% endif %}
+                    </div>
+                {% endfor %}
             </div>
         </div>
     </div>
