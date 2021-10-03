@@ -1,0 +1,19 @@
+.wrap {
+    background-color: RGBA(232, 52, 78, 0.2);
+    min-height: 100vh;
+    padding-bottom: 50px;
+}
+
+.banner {
+    width: 100%;
+    height: 200px;
+
+    background-color: white;
+    background-image: url('logo_red.png'); /*CSS에서는 jinja temp지원이 안 돼서 이렇게 씀*/
+
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+
+    cursor: pointer;
+}

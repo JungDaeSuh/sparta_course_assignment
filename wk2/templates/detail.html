@@ -13,6 +13,9 @@
         <!-- Font Awesome-->
         <script src="https://kit.fontawesome.com/1943f1cfcb.js" crossorigin="anonymous"></script>
 
+        <!-- 외부 CSS -->
+        <link href='{{ url_for("static", filename="mystyle.css") }}' rel="stylesheet">
+
         <!-- Optional JavaScript -->
         <!-- jQuery first, then Popper.js, then Bootstrap JS -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -121,6 +124,35 @@
                     }
                 })
             }
+
+            function save_word() {
+                $.ajax({
+                    type: "POST",
+                    url: `/api/save_word`,
+                    data: {
+                        word_give: "{{ word }}",
+                        definition_give: "{{ result.definitions[0].definition }}"
+                    },
+                    success: function (response) {
+                        alert(response["msg"])
+                        window.location.href = "/detail/{{ word }}?status_give=old"
+                    }
+                });
+            }
+
+            function delete_word() {
+                $.ajax({
+                    type: "POST",
+                    url: `/api/delete_word`,
+                    data: {
+                        word_give: "{{ word }}"
+                    },
+                    success: function (response) {
+                        alert(response["msg"])
+                        window.location.href = "/"
+                    }
+                });
+            }
         </script>
     </head>
     <body>
@@ -135,8 +167,11 @@
                         <h5 id="pronunciation" style="display: inline;">/{{ result.pronunciation }}/</h5>
                     {% endif %}
                 </div>
-                <button id="btn-save" class="btn btn-outline-sparta btn-lg"><i class="far fa-save"></i></button>
-                <button id="btn-delete" class="btn btn-sparta btn-lg"><i class="fas fa-trash-alt"></i></button>
+                {% if status == "new" %}
+                    <button id="btn-save" class="btn btn-outline-sparta btn-lg" onclick="save_word()"><i class="far fa-save"></i></button>
+                {% else %}
+                    <button id="btn-delete" class="btn btn-sparta btn-lg" onclick="delete_word()"><i class="fas fa-trash-alt"></i></button>
+                {% endif %}
             </div>
             <hr>
             <div id="definitions">
